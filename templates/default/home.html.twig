@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<h1>Page accueil</h1>
+
+    {% if app.user %}
+
+        Bonjour {{ app.user.firstName }}, bienvenue sur mon blog
+    {% endif %}
+
+        <h2>Les dernières salles ajoutées</h2>
+        {% for room in rooms %}
+            <h3>{{room.name}}</h3>
+            <img src="{{ room.image }}">
+            <h4>Prix de l'heure : {{ room.priceHour }}€</h4>
+        {% endfor %}
+
+
+
+
+{% endblock %}
