@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+    {% block body %}
+
+
+        <a href="{{ path('owner_add_room_spa') }}"> <button class="btn btn-dark">Ajouter une salle</button></a>
+        <a href="{{ path('owner_add_spa') }}"><button class="btn btn-dark">Ajouter un spa</button></a>
+
+
+        <h1>Liste des salles</h1>
+
+        <table class="table">
+            <tr>
+                <th>Nom de la salle</th>
+                <th>Nom du Spa</th>
+                <th>Description</th>
+                <th>Equipement</th>
+                <th>Capacité</th>
+                <th>Prix de l'heure</th>
+                <th>Image</th>
+            </tr>
+
+
+            <tbody>
+            {% for room in rooms %}
+                <tr>
+                    <td>{{ room.name }}</td>
+                    <td>{{ room.spa.name }}</td>
+                    <td>{{ room.description }}</td>
+                    <td>{% for equipment in room.equipment %}
+                        {{ equipment ~ ' ' }}
+                    {% endfor %}</td>
+                    <td>{{ room.capacity }}</td>
+                    <td>{{ room.priceHour }}</td>
+                    <td><img style="max-height: 50px" src="{{ asset('images/spa/room/' ~ room.imageName) }}" alt="{{ room.name }}"/></td>
+                    <td>
+                        <form method="get" action="{{ path('owner-modification-spa-room') }}">
+                            <input type="hidden" name="roomId" value="{{ room.id }}">
+                            <button type="submit">Modifier</button>
+                        </form>
+                    </td>
+
+                    <td>
+                        <form method="get" action="{{ path('owner-modification-spa-room-delete') }}">
+                            <input type="hidden" name="roomId" value="{{ room.id }}">
+                            <button id= "delete-form" type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+
+
+    {% endblock %}
+
+

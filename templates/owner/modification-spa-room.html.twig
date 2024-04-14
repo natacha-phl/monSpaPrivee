@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Modifiation de la salle</h1>
+
+
+    {#<form method="get" action="{{ path('owner-modification-spa-room-submit') }}">
+
+        <input type="hidden" name="roomId" value="{{ room.id }}">
+
+
+        <label for="roomName">Nom de la salle</label>
+        <input type="text" name="roomName" value="{{ room.name }}">
+
+
+        <label for="roomDescription">Description de la salle </label>
+        <input type="text" name="roomDescription" value="{{ room.description }}">
+
+        <fieldset>
+            <legend>Equipements :</legend>
+            {% for eachEquipment in equipment %}
+                <div>
+                    <input type="checkbox" id="roomEquipment_{{ loop.index }}"
+                           name="roomEquipment[]"
+                           value="{{ eachEquipment.id }}" {% if eachEquipment in room.getEquipment() %}
+                        checked {% endif %} />
+                    <label for="roomEquipment_{{ loop.index }}">{{ eachEquipment.name }}</label>
+                </div>
+            {% endfor %}
+        </fieldset>
+
+
+        <label for="roomCapacity">Capacité</label>
+        <input type="text" name="roomCapacity" value="{{ room.capacity }}">
+
+        <label for="roomPriceHour">Prix de l'heure</label>
+        <input type="text" name="roomPriceHour" value="{{ room.priceHour }}">
+
+        <img src="{{ asset('images/spa/room/' ~ room.imageName) }}">
+
+
+        <label for="roomImage">Changer l'image</label>
+        <input type="file" name="roomImage" value="{{ room.imageFile }}">
+
+
+        <a class="btn btn-dark" href="{{ path('owner-spas') }}"> Annuler</a>
+
+        <button class="btn btn-dark" type="submit">Valider les modifications</button>
+
+
+    </form>
+#}
+
+    {{ form(form) }}
+{% endblock %}
+

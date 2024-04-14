@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -10,9 +11,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/connexion.html', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository): Response
     {
-        if ($this->getUser()) {
+/*        if ($this->getUser()) {
 
             $roleUser = $this->getUser()->getRoles();
             if ($roleUser[0] == 'ROLE_ADMIN'){
@@ -20,7 +21,10 @@ class SecurityController extends AbstractController
             } else {
                 return $this->redirectToRoute('default_home');
             }
-         }
+         }*/
+
+
+
 
 
         // get the login error if there is one

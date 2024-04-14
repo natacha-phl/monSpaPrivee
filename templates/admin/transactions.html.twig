@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Liste des transactions</h1>
+
+    <table class="table">
+        <tr>
+            <th>Numéro de transaction</th>
+            <th>Date</th>
+            <th>Formule</th>
+            <th>Montant total</th>
+            <th>Statut</th>
+            <th>Date de début</th>
+            <th>Email du client</th>
+            <th>Nom du client</th>
+            <th>Prenom du client</th>
+
+            <th></th>
+        </tr>
+
+
+        <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.id}}</td>
+                <td>{{ booking.createdAt|format_datetime()}}</td>
+                <td>{{ booking.duration }}</td>
+                <td>{{ booking.totalAmount }}<span>€</span></td>
+                <td>{{ booking.status }}</td>
+                <td> {% if booking.startDate == null %} -- {% else %}
+                        {{ booking.startDate|format_datetime() }} {% endif %}</td>
+                <td>{{ booking.user.email }}</td>
+                <td>{{ booking.user.lastName }}</td>
+                <td>{{ booking.user.firstName }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+

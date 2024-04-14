@@ -55,12 +55,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'user')]
     private Collection $Booking;
 
-    #[ORM\ManyToOne(inversedBy: 'user')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Address $address = null;
+
 
     #[ORM\Column(length: 80, nullable: true)]
     private ?string $status = null;
+
+    #[ORM\Column(length: 80, nullable: true)]
+    private ?string $street = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $zipCode = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $city = null;
 
     public function __construct()
     {
@@ -254,17 +261,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
 
-    public function setAddress(?Address $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
 
     public function getStatus(): ?string
     {
@@ -274,6 +271,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(?string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(?string $street): static
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(?string $zipCode): static
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): static
+    {
+        $this->city = $city;
 
         return $this;
     }

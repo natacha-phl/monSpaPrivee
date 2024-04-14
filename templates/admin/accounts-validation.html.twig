@@ -4,5 +4,64 @@
 
     <h1>Liste des comptes à valider</h1>
 
+    {% if spas | length > 0 %}
+        <table class="table">
+            <tr>
+                <th>Nom</th>
+                <th>Siret</th>
+                <th>Adresse</th>
+                <th>Numéro de téléphone</th>
+                <th>Description</th>
+
+
+                <th></th>
+            </tr>
+
+
+            <tbody>
+            {% for spa in spas %}
+                <tr>
+                    <td>{{ spa.name }}</td>
+                    <td>{{ (spa.siret) }}</td>
+                    <td>{{ spa.street ~ ' ' ~ spa.zipCode ~ ' ' ~ spa.city.name }}</td>
+                    <td>{{ spa.phoneNumber }}</td>
+                    <td>{{ spa.description }}</td>
+                    <td>
+
+                        <form action="{{ path('admin_accounts_validation_allow') }}" method="GET">
+                            <input type="hidden" name="spaId" value="{{ spa.id }}">
+
+
+                            <button type="submit" class="btn btn-success btn-sm"
+                            >✓
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ path('admin_accounts_validation_deny') }}" method="GET">
+                            <input type="hidden" name="spaId" value="{{ spa.id }}">
+
+
+                            <button id="delete-form" type="submit" class="btn btn-danger btn-sm"
+                            >x
+                            </button>
+                        </form>
+
+                    </td>
+
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun spa à valider ! </p>
+
+    {% endif %}
+
+
+
+
+
 {% endblock %}
 

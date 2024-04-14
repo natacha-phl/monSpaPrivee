@@ -45,4 +45,14 @@ class BookingRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function allTransactionOrderRecent()
+
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.createdAt','DESC')
+            ->getQuery()
+            ->getResult();
+
+    }
 }

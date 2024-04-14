@@ -71,5 +71,10 @@ class Equipment
 
         return $this;
     }
-    
+
+    public  function __toString(){
+        return $this->name; //veut dire lorsque je veux un équipement sous forme de caractère je veux que tu renvoies le nom de la catégorie
+
+    }
+
 }

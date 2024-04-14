@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Data\EquipmentFilter;
 use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,28 +22,33 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
-    //    /**
-    //     * @return Room[] Returns an array of Room objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        /**
+      * Recupère les produits en lien avec la recherche (filtre)
+         * @return Room[]
 
-    //    public function findOneBySomeField($value): ?Room
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    */
+
+    public function findWithEquipmentFilter(EquipmentFilter $search):array
+    {
+        $query = $this
+            ->createQueryBuilder('r')
+            ->select('e','r')
+
+        ->join('r.equipment', 'e');
+
+        if(!empty($search->equipments)){
+            $query = $query
+                ->andWhere('e.id IN(:equipments)')
+                ->setParameter('equipments', $search->equipments);
+
+
+        }
+        return $query->getQuery()->getResult();
+
+
+    }
+
+
+
+
 }

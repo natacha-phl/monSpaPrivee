@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\AdminType;
+use App\Repository\BookingRepository;
+use App\Repository\SpaRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +18,7 @@ class AdminController extends AbstractController
 
 
 
-    #[Route('admin/dashboard', name: 'admin_dashboard')]
-    public function adminDashboard(){
-        return $this->render('admin/dashboard.html.twig');
-    }
+
     #[Route('admin/create-account', name: 'admin_create_account')]
     public function adminCreateAccount(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager){
         $user = new User();
@@ -43,34 +43,133 @@ class AdminController extends AbstractController
         ]);
     }
 
+
+
+
     #[Route('admin/accounts-validation', name: 'admin_accounts_validation')]
-    public function accountsValidation(){
-        return $this->render('admin/accounts-validation.html.twig');
+    public function accountsValidation(SpaRepository $spaRepository){
+
+        //$listOfSpasToBeValidated = [];
+
+        $spasToBeValidated = $spaRepository->findBy(
+            ['status'=>'standby']
+        );
+
+
+        return $this->render('admin/accounts-validation.html.twig',[
+            'spas'=>$spasToBeValidated,
+        ]);
+
     }
 
-    #[Route('admin/account-validation-details')]
-    public function accountValidationDetails(){
-        return $this->render('admin/account-validation-details.html.twig');
+
+    #[Route('admin/accounts-validation-allow', name: 'admin_accounts_validation_allow')]
+    public function accountsValidationAllow(EntityManagerInterface $manager, Request $request, SpaRepository $spaRepository, UserRepository $userRepository)
+    {
+
+        $spaId = $request->query->get('spaId');
+        $spa = $spaRepository->find($spaId);
+        $spa->setStatus('confirmed');
+
+        $spaUserId = $spa->getUser();
+        $user = $userRepository->find($spaUserId);
+        $user->setRoles(['ROLE_OWNER']);
+
+        $manager->flush();
+
+
+
+
+        return $this->redirectToRoute('admin_accounts_validation');
+
+
+
+
     }
 
-    #[Route('admin/transactions')]
-    public function transactions(){
-        return $this->render('admin/transactions.html.twig');
+    #[Route('admin/accounts-validation-deny', name: 'admin_accounts_validation_deny')]
+    public function accountsValidationDeny(EntityManagerInterface $manager, Request $request, SpaRepository $spaRepository)
+    {
+
+        $spaId = $request->query->get('spaId');
+        $spa = $spaRepository->find($spaId);
+        $manager->remove($spa);
+        $manager->flush();
+
+        return $this->redirectToRoute('admin_accounts_validation');
+
+
     }
 
-    #[Route('admin/transaction-details')]
-    public function transactionDetails(){
-        return $this->render('admin/transaction-details.html.twig');
+
+
+    #[Route('admin/transactions', name: 'admin_transactions')]
+    public function transactions(BookingRepository $bookingRepository){
+        $bookings = $bookingRepository->allTransactionOrderRecent();
+
+
+
+        return $this->render('admin/transactions.html.twig', [
+            'bookings'=>$bookings
+        ]);
     }
 
-    #[Route('admin/users')]
-    public function users(){
-        return $this->render('admin/users.html.twig');
+
+    #[Route('admin/admin-accounts-list', name: 'admin_accounts_list')]
+    public function adminAccountsList(UserRepository $userRepository){
+        $role = "ROLE_ADMIN";
+        $admins = $userRepository->findByRoleAdmin($role);
+
+
+        return $this->render('admin/admin-accounts-list.html.twig',[
+            'admins'=>$admins
+        ]);
     }
 
-    #[Route('admin/user-details')]
-    public function userDetails(){
-        return $this->render('admin/user-details.html.twig');
+    #[Route('admin/admin-remove-account', name: 'admin_remove-account')]
+    public function adminRemoveAccount(UserRepository $userRepository, Request $request, EntityManagerInterface $manager){
+        $adminId =$request->query->get('adminId');
+        $user = $userRepository->find($adminId);
+        $manager->remove($user);
+        $manager->flush();
+
+        return $this->redirectToRoute('admin_accounts_list');
+    }
+
+
+
+    #[Route('admin/owner-list', name : 'owner_accounts_list')]
+    public function ownerAccountsList(UserRepository $userRepository){
+
+        $role = "ROLE_OWNER";
+        $owners = $userRepository->findByRoleAdmin($role);
+
+
+        return $this->render('admin/owner-accounts-list.html.twig',[
+            'owners'=>$owners
+        ]);
+    }
+
+    #[Route('admin/customer-list', name : 'customer_accounts_list')]
+    public function customerAccountsList(UserRepository $userRepository){
+
+        $role = "ROLE_CUSTOMER";
+
+        $customers = $userRepository->findByRoleAdmin($role);
+
+        return $this->render('admin/customer-accounts-list.html.twig',[
+            'customers'=>$customers
+        ]);
+    }
+
+    #[Route('admin/spas-list', name : 'admin_spas_list')]
+    public function spasList(SpaRepository $spaRepository){
+
+        $spas = $spaRepository->findAll();
+
+        return $this->render('admin/spas-list.html.twig',[
+            'spas'=>$spas
+        ]);
     }
 
 }

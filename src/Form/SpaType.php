@@ -2,35 +2,55 @@
 
 namespace App\Form;
 
-use App\Entity\Address;
+use App\Entity\City;
+use App\Entity\Department;
 use App\Entity\Spa;
-use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SpaType extends AbstractType
 {
+
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class,[
-                'label'=>'Nom du SPA'])
-            ->add('description', TextType::class,[
-                'label'=>'Description du SPA '])
-            ->add('siret', TextType::class,[
-                'label'=>'Numéro de Siret'])
-            ->add('phoneNumber', TextType::class,[
-                'label'=>'Numéro de téléphone du SPA'])
-            ->add('image', TextType::class,[
-                'label'=>'Image du SPA'])
-            ->add('user', UserType::class)
-            //->add('address', AddressType::class)
-            //->add('user', UserType::class)
-        ;
+            ->add('name', TextType::class, [
+                'label' => 'Nom du SPA',
+                'constraints' => new NotBlank(['message' => 'Veuillez entrer le nom de votre SPA'])
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description du SPA'
+            ])
+            ->add('siret', TextType::class, [
+                'label' => 'Numéro de Siret'
+            ])
+            ->add('phoneNumber', TextType::class, [
+                'label' => 'Numéro de téléphone du SPA'
+            ])
+            ->add('department', EntityType::class, [
+                'class' => Department::class,
+                'choice_label' => 'name',
+                'label' => 'Département du spa',
+                'placeholder' => 'Séléctionnez votre département',
+            ])
+            ->add('city', EntityType::class, [
+                'class' => City::class,
+                'choice_label' => 'name',
+                'label' => 'Ville du spa',
+                'placeholder' => 'Séléctionnez votre ville',
+            ])
+            ->add('street', TextType::class, ['label' => 'Rue du Spa'])
+            ->add('zipCode', TextType::class, ['label' => 'Code postal du Spa'])
+            ->add('user', UserType::class);
     }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {

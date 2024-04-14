@@ -1,15 +1,10 @@
 <?php
 
 namespace App\Controller;
-
-use App\Entity\Room;
 use App\Entity\Spa;
-use App\Form\RoomType;
 use App\Repository\RoomRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use http\Client\Response;
+use App\Repository\SpaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ProductController extends AbstractController
@@ -20,16 +15,28 @@ class ProductController extends AbstractController
         return $this-> render('product/result.html.twig');
     }*/
 
-    #[Route('/room/{id}')]
-    public function room(Room $room, RoomRepository $roomRepository)
+    #[Route('/room/{id}', name: 'product-room')]
+    public function room($id, RoomRepository $roomRepository)
     {
-
-        //$roomRepository->find()
-       return $this->render('product/room.html.twig',[
-           'spa'=>$room->getSpa(),
-           'room'=>$room
-
-
+        $room = $roomRepository->find($id);
+        return $this->render('product/room.html.twig',[
+           'room'=>$room,
+            'hours1' => 1,
+            'hours2'=>2,
+            'hours3'=> 3,
     ]);
     }
+
+    #[Route('/spa/{id}')]
+    public function spa($id, SpaRepository $spaRepository, RoomRepository $roomRepository)
+    {
+        $spa = $spaRepository->find($id);
+        $rooms = $roomRepository->findBy(['spa'=>$spa]);
+        return $this->render('product/spa.html.twig', [
+            'spa' => $spa,
+            'rooms'=> $rooms,
+
+        ]);
+    }
+
 }

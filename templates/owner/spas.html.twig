@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des spas</h1>
+
+    <table class="table">
+        <tr>
+            <th>Nom du Spa</th>
+            <th>SIRET</th>
+            <th>Adresse</th>
+            <th>Numéro de téléphone</th>
+            <th>Description</th>
+            <th>Image</th>
+        </tr>
+
+
+        <tbody>
+        {% for ownerSpa in ownerSpas %}
+            <tr>
+                <td>{{ ownerSpa.name }}</td>
+                <td>{{ ownerSpa.siret }}</td>
+                <td>{{ ownerSpa.street ~ ' ' ~ ownerSpa.zipCode ~ ' ' ~ ownerSpa.city }}</td>
+                <td>{{ ownerSpa.phoneNumber }}</td>
+                <td>{{ ownerSpa.description }}</td>
+{#                <td><img style ="max-height: 50px" src="{{ ownerSpa.image }}" alt="{{ ownerSpa.name }}"/></td>#}
+                <td>
+                    <form method="get" action="{{ path('owner-modification-spa')}}">
+                        <input type="hidden" name="ownerSpaId" value="{{ownerSpa.id}}">
+                        <button type="submit">Modifier</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+{% endblock %}
+

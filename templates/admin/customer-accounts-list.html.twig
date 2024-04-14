@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Liste des comptes clients</h1>
+
+    <table class="table">
+        <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Email</th>
+
+            <th></th>
+        </tr>
+
+
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.firstName}}</td>
+                <td>{{ customer.lastName}}</td>
+                <td>{{ customer.email }}</td>
+                <td> <a href="#"> > </a> </td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+

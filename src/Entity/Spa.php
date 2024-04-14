@@ -28,12 +28,6 @@ class Spa
     #[ORM\Column(length: 80)]
     private ?string $phoneNumber = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $image = null;
-
-    #[ORM\ManyToOne(inversedBy: 'spas')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Address $address = null;
 
     #[ORM\OneToMany(targetEntity: Room::class, mappedBy: 'spa')]
     private Collection $rooms;
@@ -43,6 +37,24 @@ class Spa
 
     #[ORM\Column(length: 50)]
     private ?string $status = null;
+
+    #[ORM\Column(length: 80)]
+    private ?string $street = null;
+
+    #[ORM\Column(length: 80)]
+    private ?string $zipCode = null;
+
+    #[ORM\ManyToOne(inversedBy: 'spas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city = null;
+
+    #[ORM\ManyToOne(inversedBy: 'spas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Region $region = null;
+
+    #[ORM\ManyToOne(inversedBy: 'spas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Department $department = null;
 
 
     public function getId(): ?int
@@ -98,29 +110,6 @@ class Spa
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(string $image): static
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    public function getAddress(): ?Address
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?Address $address): static
-    {
-        $this->address = $address;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Room>
@@ -175,4 +164,66 @@ class Spa
 
         return $this;
     }
+
+    public function getStreet(): ?string
+    {
+        return $this->street;
+    }
+
+    public function setStreet(string $street): static
+    {
+        $this->street = $street;
+
+        return $this;
+    }
+
+    public function getZipCode(): ?string
+    {
+        return $this->zipCode;
+    }
+
+    public function setZipCode(string $zipCode): static
+    {
+        $this->zipCode = $zipCode;
+
+        return $this;
+    }
+
+    public function getCity(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCity(?City $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getRegion(): ?Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(?Region $region): static
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): static
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+
 }

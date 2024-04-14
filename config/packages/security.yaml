@@ -17,6 +17,7 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\AppUserAuthenticator
+            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -41,9 +42,9 @@ security:
     access_control:
          - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-         - { path: /paiement, roles : ROLE_CUSTOMER }
+         - { path: /booking/create-session-stripe, roles : ROLE_CUSTOMER }
          - { path: /mon-compte, roles : ROLE_CUSTOMER }
-         - { path: ^/owner, roles : ROLE_OWNER }
+         - { path: ^/owner/, roles : ROLE_OWNER }
 
 when@test:
     security:

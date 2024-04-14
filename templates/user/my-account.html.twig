@@ -4,4 +4,70 @@
 
     <h1>Page mon compte</h1>
 
+    <form action="{{ path('my-account-modify') }}" method="get">
+        <label for="firstname">Prénom</label>
+        <input type="text" name="firstName" id="firstname" value="{{ user.firstName }}" disabled>
+
+        <label for="lastname">Nom</label>
+        <input type="text" name="lastName" id="lastname" value="{{ user.lastName }}" disabled>
+
+
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" value="{{ user.email }}" disabled>
+
+        <label for="street">Adresse : rue</label>
+        <input type="text" name="street" id="street" value="{{ user.street }}" disabled>
+
+        <label for="zipcode">Code postal</label>
+        <input type="text" name="zipCode" id="zipcode" value="{{ user.zipCode }}" disabled>
+
+        <label for="city">Ville</label>
+        <input type="text" name="city" id="city" value="{{ user.city }}" disabled>
+
+
+        <button type="button" id="modify">Modifier</button>
+        <button type="button" id="cancel" hidden="">Annuler</button>
+
+        <button type="submit" id="modificationvalidation" hidden="">Valider</button>
+    </form>
+
+    <form action="{{ path('my-account-delete') }}" method="get">
+        <input type="hidden" name="userId" value="{{ user.id }}">
+        <button id="delete-form" class="btn btn-danger btn-sm">Supprimer mon compte</button>
+    </form>
+
+
+    <table class="table">
+        <tr>
+            <th>Date de la transaction</th>
+            <th>N°de booking</th>
+            <th>Statut</th>
+            <th>Spa</th>
+            <th>Salle</th>
+            <th>Durée</th>
+            <th>Montant</th>
+            <th>Date planifiée</th>
+            <th></th>
+        </tr>
+
+
+        <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.createdAt|format_datetime() }}</td>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.status }}</td>
+                <td>{{ booking.room.spa.name }}</td>
+                <td>{{ booking.room.name }}</td>
+                <td>{{ booking.duration }}</td>
+                <td>{{ booking.totalAmount ~ ' €' }}</td>
+                <td> {% if booking.startDate == null %} -- {% else %}
+                        {{ booking.startDate|format_datetime() }} {% endif %}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
 {% endblock %}

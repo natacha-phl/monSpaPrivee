@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Address;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -19,7 +18,6 @@ class UserType extends AbstractType
         $builder
             ->add('firstName', TextType::class,['label'=>'Prénom'])
             ->add('lastName',TextType::class,['label'=>'Nom'])
-            ->add('address', AddressType::class)
             ->add('email', EmailType::class,['label'=>' Adresse e-mail'])
             ->add('password',PasswordType::class,['label'=>'Password'])
             ->add('submit',SubmitType::class,['label'=>'Envoyer']);

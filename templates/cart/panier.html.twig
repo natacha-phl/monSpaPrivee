@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Page mon panier</h1>
+
+    {% if items | length > 0 %}
+        <table class="table">
+            <tr>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Durée</th>
+                <th>Sous-total</th>
+                <th></th>
+            </tr>
+
+
+            <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.room.name }}</td>
+                    <td>{{ item.room.priceHour }}<span>€</span></td>
+                    <td>{{ item.bookingHours }}</td>
+                    <td>{{ (item.room.priceHour * item.bookingHours) }}<span>€</span></td>
+                    <td>
+                        <form action="{{ path('cart_remove') }}" method="GET">
+{#                            <select name="itemLineNumber"  id="delete-select">#}
+                                <input type="hidden" name="itemLineNumber" value="{{item.lineNumber}}">
+{#                                <option value="{{item.lineNumber}}">supprimer</option>#}
+{#                            </select>#}
+
+                            <button type="submit" class="btn btn-danger btn-sm"
+                            >x
+                            </button>
+                        </form>
+
+                        {#                        <a href="{{ path('cart_remove', {'id': item.room.id}) }}" class="btn btn-danger btn-sm"> <i #}
+                        {#                                    class="fas fa-trash"></i></a> #}
+
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3" class="text-right">Total :
+                </td>
+                <td>{{ total }}<span>€</span></td>
+                <td></td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <a href="{{ path('payment_stripe') }}"><button id="checkout-button" class="button btn-cart">Paiement</button></a>
+    {% else %}
+        <p>Votre panier est vide !</p>
+
+    {% endif %}
+
+{% endblock %}

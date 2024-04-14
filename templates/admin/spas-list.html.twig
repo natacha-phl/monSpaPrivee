@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Liste des spas</h1>
+
+    <table class="table">
+        <tr>
+            <th>Nom du spa</th>
+            <th>Siret</th>
+            <th>N° de téléphone</th>
+            <th>Statut</th>
+        </tr>
+
+
+        <tbody>
+        {% for spa in spas %}
+            <tr>
+                <td>{{ spa.name}}</td>
+                <td>{{ spa.siret}}</td>
+                <td>{{ spa.phoneNumber }}</td>
+                <td>{{ spa.status }}</td>
+                <td> <a href="#"> > </a> </td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+

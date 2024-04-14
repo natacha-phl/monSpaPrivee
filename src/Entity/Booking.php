@@ -14,20 +14,18 @@ class Booking
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $totalAmount = null;
 
     #[ORM\Column(length: 80)]
     private ?string $status = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $startDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $endDate = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
@@ -35,6 +33,11 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'Booking')]
     private ?User $user = null;
+
+
+
+    #[ORM\Column]
+    private ?float $duration = null;
 
     public function getId(): ?int
     {
@@ -89,17 +92,7 @@ class Booking
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
-    {
-        return $this->endDate;
-    }
 
-    public function setEndDate(\DateTimeInterface $endDate): static
-    {
-        $this->endDate = $endDate;
-
-        return $this;
-    }
 
     public function getRoom(): ?Room
     {
@@ -121,6 +114,20 @@ class Booking
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+
+
+    public function getDuration(): ?float
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(float $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }

@@ -1,7 +1,59 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Page spa</h1>
+
+
+
+    <div class="card mb-3">
+        <img src="{{ asset('images/spa/room/' ~ room.imageName) }}" class="card-img-top" alt="{{ room.name }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ room.name}}</h5>
+            <p class="card-text"> {{ room.description}}</p>
+            <p class="card-text"><small class="text-body-secondary">Capacité : {{ room.capacity }} </small></p>
+            <p class="card-text"><small class="text-body-secondary">Prix de l'heure : {{ room.priceHour }} </small></p>
+            <p class="card-text"><small class="text-body-secondary">Equipement(s):</small></p>
+            {% for roomEquipment in room.equipment  %}
+                <p class="card-text"><small class="text-body-secondary">{{ roomEquipment.name }}</small></p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <form action="{{ path('cart_add',{'id' : room.id}) }}" method="GET">
+        <label for="duration-select">Durée:</label>
+        <select name="hours" id="duration-select">
+            <option value="1">1h</option>
+            <option value="2">2h</option>
+            <option value="3">3h</option>
+        </select>
+        <button type="submit">Ajouter au panier</button>
+    </form>
+
+
+
+{#    //ancien
+    <h1>Salle {{ room.name }}</h1>
+    <img src="{{ asset('images/spa/room/' ~ room.imageName) }}">
+    <div>
+        Description : {{ room.description }}
+        Capacité : {{ room.capacity }}
+        {% for roomEquipment in room.equipment %}
+            Equipement : {{ roomEquipment.name }}
+        {% endfor %}
+        Prix de l'heure : {{ room.priceHour }}
+
+
+        <form action="{{ path('cart_add',{'id' : room.id}) }}" method="GET">
+            <label for="duration-select">Durée:</label>
+            <select name="hours" id="duration-select">
+                <option value="1">1h</option>
+                <option value="1.5">1h30</option>
+                <option value="2">2h</option>
+            </select>
+            <button type="submit">Ajouter au panier</button>
+        </form>
+
+
+    </div>#}
 
 {% endblock %}
 

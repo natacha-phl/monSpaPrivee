@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <h1>Liste des reservations</h1>
+
+    <table class="table">
+        <tr>
+            <th>Date de la transaction</th>
+            <th>N°de booking</th>
+            <th>Statut</th>
+            <th>Spa</th>
+            <th>Salle</th>
+            <th>Durée</th>
+            <th>Montant</th>
+            <th>Date planifiée</th>
+            <th>Nom du client</th>
+            <th>Prénom du client</th>
+            <th>Email du client</th>
+
+
+
+
+            <th></th>
+        </tr>
+
+
+        <tbody>
+        {% for booking in boookings %}
+            <tr>
+                <td>{{ booking.createdAt|format_datetime() }}</td>
+                <td>{{ booking.id }}</td>
+                <td>{{ booking.status}}</td>
+                <td>{{ booking.room.spa.name}}</td>
+                <td>{{ booking.room.name}}</td>
+                <td>{{ booking.duration }}</td>
+                <td>{{ booking.totalAmount ~ ' €' }}</td>
+                <td>{{ booking.startDate|format_datetime()}}</td>
+                <td>{{ booking.user.lastName}}</td>
+                <td>{{ booking.user.firstName}}</td>
+                <td>{{ booking.user.email}}</td>
+
+
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
+

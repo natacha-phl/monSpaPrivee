@@ -45,4 +45,75 @@ class SpaRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+/*
+    public function findDistinctDepartments(): array
+    {
+        $departments = $this->createQueryBuilder('s')
+            ->select('d.id, d.name')
+            ->join('s.department', 'd')
+            ->getQuery()
+            ->getResult();
+
+        $formattedDepartments = [];
+        foreach ($departments as $department) {
+            $formattedDepartments[$department['id']] = $department['name'];
+        }
+
+        return $formattedDepartments;
+    }
+
+    public function findDistinctCities(): array
+    {
+        $cities = $this->createQueryBuilder('s')
+            ->select('c.id, c.name')
+            ->join('s.city', 'c')
+            ->getQuery()
+            ->getResult();
+
+        $formattedCities = [];
+        foreach ($cities as $city) {
+            $formattedCities[$city['id']] = $city['name'];
+        }
+
+        return $formattedCities;
+    }*/
+
+    public function findDistinctDepartments(): array
+    {
+        $departments = $this->createQueryBuilder('s')
+            ->select('d.name')
+            ->join('s.department', 'd')
+            ->groupBy('d.name') // Group by name pour éviter les doublons
+            ->getQuery()
+            ->getResult();
+
+        $formattedDepartments = [];
+        foreach ($departments as $department) {
+            $formattedDepartments[] = $department['name'];
+        }
+
+        return $formattedDepartments;
+    }
+
+    public function findDistinctCities(): array
+    {
+        $cities = $this->createQueryBuilder('s')
+            ->select('c.name')
+            ->join('s.city', 'c')
+            ->groupBy('c.name') // Group by name pour éviter les doublons
+            ->getQuery()
+            ->getResult();
+
+        $formattedCities = [];
+        foreach ($cities as $city) {
+            $formattedCities[] = $city['name'];
+        }
+
+        return $formattedCities;
+    }
+
+
+
+
 }

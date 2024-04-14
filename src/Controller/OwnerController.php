@@ -2,66 +2,256 @@
 
 namespace App\Controller;
 
-use App\Entity\Address;
 use App\Entity\Room;
 use App\Entity\Spa;
 use App\Entity\User;
-use App\Form\OwnerType;
+use App\Form\RoomModificationType;
 use App\Form\RoomType;
 use App\Form\SpaType;
-use App\Form\UserType;
-use ContainerG9bQChc\getSpaRepositoryService;
+use App\Repository\BookingRepository;
+use App\Repository\RoomRepository;
+use App\Repository\SpaRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+
 
 class OwnerController extends AbstractController
 {
-    #[Route('owner/sign-up', name:'owner_signup')]
-    public function signUp(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager){
-        $user = new User();
-        $user->setRoles(['ROLE_OWNER']);
-        $user->setStatus('standby');
 
-        $address = new Address();
-        $user->setAddress($address);
-
-        $spa = new Spa();
-        $spa->setUser($user);
-        $spa->setAddress($address);
-        $spa->setStatus('standby');
+    #[Route('owner/spas', name: 'owner-spas')]
+    public function ownerSpas(SpaRepository $spaRepository)
+    {
+        $user = $this->getUser();
+        $ownerSpas = $spaRepository->findBy([
+            'user' => $user
+        ]);
 
 
-        $form = $this->createForm(SpaType::class,$spa);
-        $form->handleRequest($request);
+        return $this->render('owner/spas.html.twig', [
+            'ownerSpas' => $ownerSpas
+        ]);
+    }
 
-        if ($form->isSubmitted()) {
-            $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($hashedPassword);
+    #[Route('owner/modification-spa-room', name: 'owner-modification-spa-room')]
+    public function ownerModificationSpa(RoomRepository $roomRepository, EntityManagerInterface $manager, Request $request)
+    {
+        if ($this->getUser()) {
+            $ownerId = $this->getUser()->getUserIdentifier();
+            $roomId = $request->query->get('roomId');
+            $room = $roomRepository->find($roomId);
+            $spa = $room->getSpa();
 
-            $manager->persist($user);
-            $manager->persist($address);
-            $manager->persist($spa);
 
-            $manager->flush();
+            if ($spa->getUser()->getUserIdentifier() === $ownerId) {
 
-            return $this->redirectToRoute('default_home');
+
+                $form = $this->createForm(RoomModificationType::class, $room);
+
+                $form->setData($room);
+
+                $form->handleRequest($request);
+                if ($form->isSubmitted() && $form->isValid()) {
+                    // Enregistrer les modifications dans la base de données
+                    $manager->persist($room);
+                    $manager->flush();
+
+                    // Rediriger l'utilisateur vers une autre page après la modification
+                    return $this->redirectToRoute('owner_rooms');
+                }
+
+                // Afficher le formulaire de modification dans le template
+                return $this->render('owner/modification-spa-room.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
 
         }
 
 
+        return $this->redirectToRoute('default_home');
 
-        return $this->render('owner/sign-up.html.twig', [
-            'form'=>$form
-        ]);
     }
 
-    #[Route('owner/dashboard', name:'owner_dashboard')]
-    public function ownerDashboard(){
-        return $this->render('owner/dashboard.html.twig');
+    #[Route('owner/modification-spa-room-delete', name: 'owner-modification-spa-room-delete')]
+    public function ownerModificationSpaDelete(RoomRepository $roomRepository, EntityManagerInterface $manager, Request $request)
+    {
+        if ($this->getUser()) {
+            $ownerId = $this->getUser()->getUserIdentifier();
+            $roomId = $request->query->get('roomId');
+            $room = $roomRepository->find($roomId);
+            $spa = $room->getSpa();
+
+
+            if ($spa->getUser()->getUserIdentifier() === $ownerId) {
+                $manager->remove($room);
+                $manager->flush();
+
+                $this->redirectToRoute("owner_rooms");
+            }
+        }
+        return $this->redirectToRoute("default_home");
+    }
+
+
+    /* #[Route('owner/modification-spa-room-submit', name: 'owner-modification-spa-room-submit')]
+     public function ownerModificationSpaSubmit(UploadHandler $uploadHandler,EquipmentRepository $equipmentRepository, RoomRepository $roomRepository, Request $request, EntityManagerInterface $manager)
+     {
+
+         if ($this->getUser()) {
+             $roomId = $request->query->get('roomId');
+             $room = $roomRepository->find($roomId);
+             $spa = $room->getSpa();
+             $owner = $spa->getUser();
+
+             if ($owner === $this->getUser()) {
+
+
+                 $roomName = $request->query->get('roomName');
+                 $roomDescription = $request->query->get('roomDescription');
+                 $roomCapacity = $request->query->get('roomCapacity');
+                 $roomPriceHour = $request->query->get('roomPriceHour');
+                 $roomImage = $request->files->get('roomImage');
+
+
+                 $roomEquipment = $request->get('roomEquipment');
+
+
+                 $currentEquipments = $room->getEquipment();
+
+                 $currentEquipmentIds = [];
+                 foreach ($currentEquipments as $equipment) {
+                     $currentEquipmentIds[] = $equipment->getId();
+                 }
+
+
+                 // Comparer les équipements envoyés depuis le formulaire avec ceux déjà associés
+                 $newEquipments = [];
+                 foreach ($roomEquipment as $equipmentId) {
+                     if (!in_array($equipmentId, $currentEquipmentIds)) {
+                         $newEquipments[] = $equipmentRepository->find($equipmentId);
+                     }
+                 }
+
+                 // Supprimer les équipements actuels de la salle
+                 foreach ($currentEquipments as $equipment) {
+                     $room->removeEquipment($equipment);
+                 }
+
+                 // Ajouter les nouveaux équipements à la salle
+                 foreach ($newEquipments as $equipment) {
+                     $room->addEquipment($equipment);
+                 }
+
+                 $room->setName($roomName);
+                 $room->setDescription($roomDescription);
+                 $room->setCapacity($roomCapacity);
+                 $room->setPriceHour($roomPriceHour);
+
+
+                 if ($roomImage instanceof UploadedFile) {
+                     // Utiliser VichUploaderBundle pour télécharger et renommer le fichier
+                 $newFileName = $uploadHandler->upload($roomImage, 'cdd');
+
+                 // Mettre à jour le nom du fichier dans l'entité Room
+                 $room->setImageFile($newFileName);
+             }
+
+                 $manager->persist($spa);
+
+                 $manager->flush();
+
+
+                 return $this->redirectToRoute('owner_rooms');
+
+
+             }
+
+             return $this->redirectToRoute('owner_rooms');
+
+
+         }
+         return  $this->redirectToRoute('default_home');
+
+
+     }*/
+
+
+    #[Route('owner/reservations', name: 'owner_bookings')]
+    public function ownerBookings(Request $request, BookingRepository $bookingRepository, RoomRepository $roomRepository, SpaRepository $spaRepository, EntityManagerInterface $manager)
+    {
+
+        $user = $this->getUser();
+
+        $spas = $spaRepository->findBy([
+            'user' => $user
+        ]);
+
+        $roomsOfSpa = $roomRepository->findBy([
+            'spa' => $spas
+        ]);
+
+        $bookings = $bookingRepository->findBy([
+            'room' => $roomsOfSpa
+        ]);
+
+
+        return $this->render('owner/bookings.html.twig', [
+            'boookings' => $bookings
+        ]);
+
+    }
+
+    #[Route('owner/validation-reservations', name: 'bookings-validation')]
+    public function bookingValidation(Request $request, BookingRepository $bookingRepository, RoomRepository $roomRepository, SpaRepository $spaRepository, EntityManagerInterface $manager)
+    {
+
+        $user = $this->getUser();
+
+        $spas = $spaRepository->findBy([
+            'user' => $user
+        ]);
+
+        $roomsOfSpa = $roomRepository->findBy([
+            'spa' => $spas
+        ]);
+
+        $bookings = $bookingRepository->findBy([
+            'room' => $roomsOfSpa,
+            'status' => 'unbooked'
+        ]);
+
+
+        return $this->render('owner/bookings-validation.html.twig', [
+            'boookings' => $bookings
+        ]);
+
+    }
+
+
+    #[Route('owner/schedule-booking', name: 'schedule-booking')]
+    public function sceduleBooking(Request $request, BookingRepository $bookingRepository, EntityManagerInterface $manager)
+    {
+
+        $bookingId = $request->query->get('bookingId');
+        $bookingStartDate = $request->query->get('bookingStartDate');
+
+
+        $bookingStartDateConverted = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $bookingStartDate);
+
+
+        $booking = $bookingRepository->find($bookingId);
+
+        $booking->setStartDate($bookingStartDateConverted);
+        $booking->setStatus('booked');
+
+        $manager->persist($booking);
+        $manager->flush();
+
+
+        return $this->redirectToRoute('bookings-validation');
 
     }
 
@@ -77,20 +267,20 @@ class OwnerController extends AbstractController
             $userRepository = $manager->getRepository(User::class);
             $user = $userRepository->find($this->getUser());
 
-            $spa = $user->getSpa()->first();//changer car ce n'est pas le first / il faut récup le spa dans le form
-
-
-           $spas = $user->getSpa();
-           //dd($spas);
+//            $spa = $user->getSpa()->first();//changer car ce n'est pas le first / il faut récup le spa dans le form
+//
+//
+            $spas = $user->getSpa();
+//           //dd($spas);
 
 
             $room = new Room();
 
-            $room->setSpa($spa);
+//            $room->setSpa($spa);
 
 
-            $form = $this->createForm(RoomType::class, $room,[
-                'spas'=>$spas
+            $form = $this->createForm(RoomType::class, $room, [
+                'spas' => $spas
             ]);
 
 
@@ -113,6 +303,65 @@ class OwnerController extends AbstractController
         }
     }
 
+
+    #[Route('owner/rooms', name: 'owner_rooms')]
+    public function ownerRooms(Request $request, RoomRepository $roomRepository, SpaRepository $spaRepository)
+    {
+
+        $roleUser = $this->getUser()->getRoles();
+
+
+        if ($roleUser[0] == 'ROLE_OWNER') {
+
+            $spas = $spaRepository->findBy(
+                ['user' => $this->getUser()]
+            );
+
+            $rooms = $roomRepository->findBy(
+                ['spa' => $spas]
+            );
+
+            return $this->render('owner/rooms.html.twig', [
+                'rooms' => $rooms
+            ]);
+
+        } else {
+
+            return $this->redirectToRoute('default_home');
+        }
+
+
+    }
+
+    #[Route('owner/add-spa', name: 'owner_add_spa')]
+    public function ownerAddRoom(Request $request, EntityManagerInterface $manager)
+
+    {
+        $roleUser = $this->getUser()->getRoles();
+
+
+        if ($roleUser[0] == 'ROLE_OWNER') {
+            $spa = new Spa();
+
+            $form = $this->createForm(SpaType::class);
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted()) {
+
+                $manager->persist($spa);
+
+                $manager->flush();
+                return $this->redirectToRoute('owner-spas');
+
+
+            } else {
+                return $this->render('owner/add-spa.html.twig', [
+                    'form' => $form
+                ]);
+            }
+        }
+    }
 
 
 }

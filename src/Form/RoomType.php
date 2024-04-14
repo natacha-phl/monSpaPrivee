@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 
 class RoomType extends AbstractType
@@ -31,7 +32,7 @@ class RoomType extends AbstractType
             ->add('description')
             ->add('capacity')
             ->add('priceHour')
-            ->add('image')
+            ->add('imageFile', VichFileType::class, ['label'=>"Image"])
             ->add('equipment', EntityType::class, [
                 'class' => Equipment::class,
                 'choice_label' => 'name',
@@ -47,7 +48,9 @@ class RoomType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Room::class,
-            'spas' => null
+            'spas' => null,
+            'startDate'=> null,
+            'endDate'=>null
         ]);
 
     }

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>S{{ spa.name}}</h1>
+    <img src="{{ spa.image }}">
+    <div>
+        Description : {{ spa.description}}
+        
+        <h2>Salle(s)</h2>
+        {% for room in rooms  %}
+            <a href="{{ path('product-room', {'id' : room.id})}}"><img src="{{ room.image }}">
+            Nom de la salle : {{ room.name }}
+            Prix de l'heure {{ room.priceHour }}
+            </a>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+

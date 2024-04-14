@@ -2,21 +2,35 @@
 
 {% block body %}
 
-<h1>Page accueil</h1>
+    <div id="home-top-container">
+        <p>{% if app.user %}
+                Bonjour {{ app.user.firstName }}, bienvenue sur MonSpaPrivé
+            {% endif %}</p>
+        <img src="{{ asset('assets/image/main-picture.jpg') }}" alt="spa monspaprive">
+    </div>
+    <div id="main-content-container" class="d-flex">
 
-    {% if app.user %}
-
-        Bonjour {{ app.user.firstName }}, bienvenue sur mon blog
-    {% endif %}
-
-        <h2>Les dernières salles ajoutées</h2>
-        {% for room in rooms %}
-            <h3>{{room.name}}</h3>
-            <img src="{{ room.image }}">
-            <h4>Prix de l'heure : {{ room.priceHour }}€</h4>
-        {% endfor %}
+        {% include 'booking/_filter.html.twig' %}
 
 
+
+
+        <div id="cards" class="d-flex mx-auto">
+
+            {% for room in rooms %}
+                <div class="card mt-2 mb-2 ms-2 me-2" style="width: 18rem;">
+                    <img src="{{ asset('images/spa/room/' ~ room.imageName) }}" class="card-img-top" alt="{{ room.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ room.name }}</h5>
+                        <p class="card-text"> A partir de {{ room.priceHour }}€</p>
+                        <a href="{{ path('product-room', {'id' : room.id}) }}" class="btn btn-primary"><h3>Réserver</h3>
+                        </a>
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
 
 
 {% endblock %}
