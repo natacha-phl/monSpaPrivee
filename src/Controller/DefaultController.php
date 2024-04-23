@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Data\EquipmentFilter;
-use App\Data\LocationFilter;
 use App\Form\EquipmentFilterType;
 use App\Form\LocationFilterType;
 use App\Repository\RoomRepository;
@@ -18,52 +17,70 @@ class DefaultController extends AbstractController
     public function home(RoomRepository $roomRepository, SpaRepository $spaRepository, Request $request)
     {
 
-        $rooms = $roomRepository->findAll();
+//        $rooms = $roomRepository->findAll();
+
+        $rooms = [];
+
+        $formEquipment =[];
 
 
-        $data = new EquipmentFilter();
-        $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
-        $formEquipment->handleRequest($request);
+//        $data = new EquipmentFilter();
+//        $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
+//        $formEquipment->handleRequest($request);
 
-        $departments = $spaRepository->findDistinctDepartments();
-        $cities = $spaRepository->findDistinctCities();
+        /*        $departments = $spaRepository->findDistinctDepartments();
+                $cities = $spaRepository->findDistinctCities();*/
 
 
+        /*        $formLocation = $this->createForm(LocationFilterType::class,null,[
+                    'departments'=>$departments,
+                    'cities'=>$cities,
+                ]);*/
 
-        $formLocation = $this->createForm(LocationFilterType::class,null,[
-            'departments'=>$departments,
-            'cities'=>$cities,
-        ]);
-            $formLocation->handleRequest($request);
+        $formLocation = $this->createForm(LocationFilterType::class,);
+        $formLocation->handleRequest($request);
 
-            if ($formLocation->isSubmitted()) {
-                $formData = $formLocation->getData();
+        if ($formLocation->isSubmitted()) {
+            $formData = $formLocation->getData();
 
 //                if ($formData['region'] !== null || $formData['department'] !== null || $formData['city'] !== null) {
-                if ($formData['department'] !== null || $formData['city'] !== null) {
+            if ($formData['department'] !== null) {
 
-                    $spas = $spaRepository->findBy([
+                $spas = $spaRepository->findBy([
 //                        'region' => $formData['region'],
-                        'department' => $formData['department'],
-                        'city' => $formData['city'],
-                    ]);
+                    'department' => $formData['department'],
+                ]);
+            }
 
-                    if(!empty($spas)){
-                        $spaIds = [];
-                        foreach ($spas as $spa) {
-                            $spaIds[] = $spa->getId();
-                        }
+            if ($formData['city'] !== null) {
 
-                        $rooms = $roomRepository->findBy([
-                            'spa' => $spaIds
-                        ]);
+                $spas = $spaRepository->findBy([
+//                        'region' => $formData['region'],
+                    'city' => $formData['city'],
+                ]);
+            }
 
+                if (!empty($spas)) {
+                    $spaIds = [];
+                    foreach ($spas as $spa) {
+                        $spaIds[] = $spa->getId();
                     }
 
-
-
+                    $rooms = $roomRepository->findBy([
+                        'spa' => $spaIds
+                    ]);
 
                 }
+
+                $data = new EquipmentFilter();
+                $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
+                $formEquipment->handleRequest($request);
+
+
+
+
+        } else {
+            $rooms=$roomRepository->findAll();
         }
 
 
@@ -72,7 +89,7 @@ class DefaultController extends AbstractController
 
         return $this->render('default/home.html.twig', [
             'rooms' => $rooms,
-            'formEquipment' => $formEquipment->createView(),
+            'formEquipment' => $formEquipment,
             'formLocation' => $formLocation->createView()
 
         ]);

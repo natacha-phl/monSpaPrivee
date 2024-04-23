@@ -2,6 +2,10 @@
 
 {% block body %}
 
+    <a href="{{ path('owner-spas') }}"> <button class="btn btn-dark">Liste des SPAS </button></a>
+    <a href="{{ path('owner_rooms') }}"><button class="btn btn-dark">Liste des salles</button></a>
+    <a href="{{ path('owner_add_spa') }}"> <button class="btn btn-dark">Ajouter un Spa</button></a>
+
     <h1>Ajouter une salle</h1>
 
     {{ form(form) }}

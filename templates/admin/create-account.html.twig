@@ -1,10 +1,21 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-10 col-lg-8 mx-auto">
+                {#                {% if error %}
+                #}{#        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}{#
+                <div class="alert alert-danger">Veuillez remplir tous les champs requis </div>
+                {% endif %} #}
 
-<h1>Créer un nouvel administrateur <h1>
+                <h1 class="h3 mb-3 font-weight-normal">Ajouter un nouvel administrateur</h1>
 
-    {{ form(form) }}
+                {{ form(form) }}
+
+            </div>
+        </div> <!-- /.row -->
+    </div> <!-- /.container -->
 
 
 {% endblock %}

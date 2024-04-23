@@ -30,7 +30,7 @@ class EquipmentFilterType extends AbstractType
          'data_class'=>EquipmentFilter::class,
          'method'=>'GET',
          'csrf_protection' => false, //on désactive car on dans un formulaire de recherche pas de probleme de s"cu
-         'attr'=>['id'=>'search']
+         'attr'=>['id'=>'equipment-filter']
      ]);
 
 

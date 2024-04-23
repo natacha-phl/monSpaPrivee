@@ -10,9 +10,9 @@ use App\Repository\BookingRepository;
 use App\Repository\RegionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use http\Env\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,9 +29,18 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class,$user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $hashedPassword = $hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hashedPassword);
+
+            $firstName = $form->get('firstName')->getData();
+            $lastName = $form->get('lastName')->getData();
+            $email = $form->get('email')->getData();
+
+            $user->setFirstName(ucwords(addslashes(trim(htmlentities(strip_tags($firstName))))));
+            $user->setLastName(ucwords(addslashes(trim(htmlentities(strip_tags($lastName))))));
+            $user->setEmail(strtolower(addslashes(trim(htmlentities(strip_tags($email))))));
+
 
             $manager->persist($user);
             $manager->flush();
@@ -56,6 +65,8 @@ class UserController extends AbstractController
         $user = new User();
         $user->setRoles(['ROLE_STANDBY']);
         $user->setStatus('standby');
+
+
 
 
 
@@ -151,14 +162,15 @@ public function myAccountDelete(SessionInterface $session, Request $request, Use
 {
     if($this->getUser()){
 
-    $userId=$request->query->get('userId');
-    $user = $userRepository->find($userId);
+//    $userId=$request->query->get('userId');
+    $user = $this->getUser();
+    $session = new Session();
+    $session->invalidate();
     $manager->remove($user);
     $manager->flush();
 
-    $session->invalidate();
 
-    return $this->redirectToRoute('default_home');
+    return $this->redirectToRoute('app_logout');
     }
     else {
         return$this->redirectToRoute('default_home');

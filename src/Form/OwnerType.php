@@ -22,7 +22,7 @@ class OwnerType extends AbstractType
             ->add('firstName', TextType::class,['label'=>'Prénom'])
             ->add('lastName',TextType::class,['label'=>'Nom'])
             ->add('email', EmailType::class,['label'=>' Adresse e-mail'])
-            ->add('password',PasswordType::class,['label'=>'Password'])
+            ->add('password',PasswordType::class,['label'=>'Mot de passe'])
             ->add('submit',SubmitType::class,['label'=>'Envoyer'])
 
 

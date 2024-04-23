@@ -2,6 +2,9 @@
 
 {% block body %}
 
+    <a href="{{ path('owner-bookings-validation') }}"> <button class="btn btn-dark">Réservations à plannifier </button></a>
+
+
     <h1>Liste des reservations</h1>
 
     <table class="table">
@@ -35,7 +38,8 @@
                 <td>{{ booking.room.name}}</td>
                 <td>{{ booking.duration }}</td>
                 <td>{{ booking.totalAmount ~ ' €' }}</td>
-                <td>{{ booking.startDate|format_datetime()}}</td>
+                <td>{% if booking.startDate == null %} -- {% else %}
+                        {{ booking.startDate|format_datetime() }} {% endif %}</td>
                 <td>{{ booking.user.lastName}}</td>
                 <td>{{ booking.user.firstName}}</td>
                 <td>{{ booking.user.email}}</td>

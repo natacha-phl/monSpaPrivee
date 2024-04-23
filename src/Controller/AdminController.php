@@ -74,6 +74,7 @@ class AdminController extends AbstractController
         $spaUserId = $spa->getUser();
         $user = $userRepository->find($spaUserId);
         $user->setRoles(['ROLE_OWNER']);
+        $user->setStatus('confirmed');
 
         $manager->flush();
 

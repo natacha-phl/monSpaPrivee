@@ -38,6 +38,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+
+
+    public function findByRoleAdmin($role){
+        return $this->createQueryBuilder('u')//createQueryBuilder nous ait donné par entity repository à l'interieur il faut créer un alas
+        ->where('u.roles LIKE :role')
+            ->setParameter('role', "%\"$role\"%")
+            ->getQuery()
+            ->getResult();
+
+
+    }
+
+
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */
@@ -62,14 +76,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
-    public function findByRoleAdmin($role){
-        return $this->createQueryBuilder('u')//createQueryBuilder nous ait donné par entity repository à l'interieur il faut créer un alas
-        ->where('u.roles LIKE :role')
-            ->setParameter('role', "%\"$role\"%")
-            ->getQuery()
-            ->getResult();
-
-
-    }
 }

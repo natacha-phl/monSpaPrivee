@@ -19,7 +19,7 @@ class PaymentController extends AbstractController
     #[Route('/payment/success', name: 'payment_success')]
     public function success()
     {
-        $this->addFlash('notice', 'Votre reservation a bien été effectué !');
+//        $this->addFlash('notice', 'Votre reservation a bien été effectué !');
         return $this->render('payment/success.html.twig', [
         ]);
 
@@ -28,7 +28,7 @@ class PaymentController extends AbstractController
     #[Route('/payment/error', name: 'payment_error')]
     public function error()
     {
-        $this->addFlash('notice', 'Une erreur est survenue lors de votre paiement ! Veuillez vérifier vos données.');
+//        $this->addFlash('notice', 'Une erreur est survenue lors de votre paiement ! Veuillez vérifier vos données.');
         return $this->render('payment/error.html.twig', [
         ]);
 
@@ -111,9 +111,11 @@ class PaymentController extends AbstractController
                 'payment_method_types' => ['card'],
                 'line_items' => $checkoutItems, // Utiliser les éléments de paiement construits précédemment
                 'mode' => 'payment',
-                'success_url' => $this->generateUrl('booking_reserver', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 'cancel_url' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
             ]);
+
+        $session->invalidate();
 
 
 

@@ -1,8 +1,63 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un compte entreprise{% endblock %}
+
+
 
 {% block body %}
-<h1>Créer un compte entreprise</h1>
 
-{{ form(form) }}
+    <div class="container">
+        <div id="owner-sign-up" class="row d-flex mt-5">
+            <div class="col-8 col-lg-6 mx-auto">
+                {#                {% if error %}
+                #}{#        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div> #}{#
+                <div class="alert alert-danger">Veuillez remplir tous les champs requis </div>
+            {% endif %} #}
+
+                <h1 class="h3 mb-3 font-weight-normal">Créer un compte entreprise</h1>
+
+                {{ form(form) }}
+            </div>
+            <div class="col-8 col-lg-6 mx-auto">
+                <a class="btn btn-light d-block d-lg-none mb-3" data-toggle="collapse" href="#multiCollapseExample1"
+                   role="button"
+                   aria-expanded="false" aria-controls="multiCollapseExample1"><h2 class="h3 mb-3 font-weight-normal ">
+                        Comment ça marche ?</h2></a>
+                <h2 class="h3 mb-3 font-weight-normal d-none d-lg-block ">Comment ça marche ?</h2>
+                <div class="collapse multi-collapse d-none d-lg-block" id="multiCollapseExample1">
+                    <div class="bg-light p-3 text-center mb-4 h5"><span class="fw-bold">Etape 1 :</span><br> Je fais une
+                        demande de création de compte en remplissant le formulaire sur cette page
+                    </div>
+                    <div class="d-flex justify-content-center mb-4" style="height: 40px;"><img class="img-fluid"
+                                                                                               src="{{ asset('assets/image/flechebas.png') }}">
+                    </div>
+                    <div class="bg-light p-3 text-center  mb-4 h5"><span class="fw-bold">Etape 2 :</span><br> My VIP Spa
+                        vérifie mon compte
+                    </div>
+                    <div class="d-flex justify-content-center mb-4" style="height: 40px;"><img class="img-fluid"
+                                                                                               src="{{ asset('assets/image/flechebas.png') }}">
+                    </div>
+                    <div class="bg-light p-3 text-center  mb-4 h5"><span class="fw-bold">Etape 3 :</span><br> Je reçois
+                        une notification positive ou négative par mail de la validation de mon compte
+                    </div>
+                    <div class="d-flex justify-content-center mb-4" style="height: 40px;"><img class="img-fluid"
+                                                                                               src="{{ asset('assets/image/flechebas.png') }}">
+                    </div>
+                    <div class="bg-light p-3 text-center  mb-4 h5"><span class="fw-bold">Etape 4 :</span><br> Si mon
+                        compte est validé, je peux commencer à poster mes prestations
+                    </div>
+                    <div class="d-flex justify-content-center mb-4" style="height: 40px;"><img class="img-fluid"
+                                                                                               src="{{ asset('assets/image/flechebas.png') }}">
+                    </div>
+                    <div class="bg-light p-3 text-center  mb-4 h5"><span class="fw-bold">Etape 5 :</span><br> Si mon
+                        compte n'est pas validé je refais une demande en m'assurant de bien remplir informations du
+                        Spa notammant le numéro de Siret qui est verifié par nos équipes
+                    </div>
+                </div>
+
+
+            </div>
+        </div> <!-- /.row -->
+    </div> <!-- /.container -->
 
 {% endblock %}

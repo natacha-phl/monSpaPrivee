@@ -7,13 +7,15 @@ use App\Entity\Department;
 use App\Entity\Spa;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class SpaType extends AbstractType
+class SpaForPartnersType extends AbstractType
 {
 
 
@@ -22,12 +24,14 @@ class SpaType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du SPA',
-                'constraints' => new NotBlank(['message' => 'Veuillez entrer le nom de votre SPA'])
+//                'constraints' => new NotBlank(['message' => 'Veuillez entrer le nom de votre SPA'])
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description du SPA'
             ])
             ->add('siret', TextType::class, [
                 'label' => 'Numéro de Siret'
             ])
-
             ->add('phoneNumber', TextType::class, [
                 'label' => 'Numéro de téléphone du SPA'
             ])
@@ -45,13 +49,7 @@ class SpaType extends AbstractType
             ])
             ->add('zipCode', TextType::class, ['label' => 'Code postal du Spa'])
             ->add('street', TextType::class, ['label' => 'Rue du Spa'])
-            ->add('description', TextareaType::class, [
-                'label' => 'Description du SPA'
-            ])
-
-            ->add('user', UserType::class,[
-                'label'=>'Créer le compte utilisateur'
-            ]);
+            ->add('submit', SubmitType::class, ['label' => 'Ajouter']);
     }
 
 

@@ -1,10 +1,35 @@
+<div id="home-forms">
+    <div id="form-orga">
 
-{{ form_start(formLocation) }}
-<button class="btn btn-secondary btn-sm" type="submit">Choisir</button>
-{{ form_end(formLocation) }}
+    {{ form_start(formLocation) }}
+    <div class="mb-3 row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+{#            <button id="validate-btn-filter" class="btn btn-secondary btn-sm w-100" type="submit">Valider</button>#}
+        </div>
+    </div>
+    <div id="department-city-field">
+        {{ form_end(formLocation) }}
+    </div>
+    </div>
+    <div class="mb-3 row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <a href="{{ path('default_home') }}"><button  class="btn btn-secondary btn-sm"
+                    style="width: 100%; margin-top: 5px">Réinitialiser
+            </button></a>
+        </div>
+    </div>
 
 
+    {# {% if formEquipment is empty %}
 
-{{ form_start(formEquipment) }}
-<button class="btn btn-secondary btn-sm" type="submit">Filtrer</button>
-{{ form_end(formEquipment) }}
+    {% else %}
+
+        {{ form_start(formEquipment) }}
+        <button class="btn  btn-sm" type="submit">Filtrer</button>
+        {{ form_end(formEquipment) }}
+
+    {% endif %} #}
+
+</div>

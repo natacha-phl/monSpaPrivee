@@ -7,8 +7,10 @@ use App\Entity\Spa;
 use App\Entity\User;
 use App\Form\RoomModificationType;
 use App\Form\RoomType;
+use App\Form\SpaForPartnersType;
 use App\Form\SpaType;
 use App\Repository\BookingRepository;
+use App\Repository\RegionRepository;
 use App\Repository\RoomRepository;
 use App\Repository\SpaRepository;
 use DateTimeImmutable;
@@ -204,7 +206,7 @@ class OwnerController extends AbstractController
 
     }
 
-    #[Route('owner/validation-reservations', name: 'bookings-validation')]
+    #[Route('owner/validation-reservations', name: 'owner-bookings-validation')]
     public function bookingValidation(Request $request, BookingRepository $bookingRepository, RoomRepository $roomRepository, SpaRepository $spaRepository, EntityManagerInterface $manager)
     {
 
@@ -251,7 +253,7 @@ class OwnerController extends AbstractController
         $manager->flush();
 
 
-        return $this->redirectToRoute('bookings-validation');
+        return $this->redirectToRoute('owner-bookings-validation');
 
     }
 
@@ -334,33 +336,45 @@ class OwnerController extends AbstractController
     }
 
     #[Route('owner/add-spa', name: 'owner_add_spa')]
-    public function ownerAddRoom(Request $request, EntityManagerInterface $manager)
+    public function ownerAddSpa(Request $request, EntityManagerInterface $manager, RegionRepository $regionRepository)
 
     {
-        $roleUser = $this->getUser()->getRoles();
+
+        if ($this->getUser()) {
+            $roleUser = $this->getUser()->getRoles();
 
 
-        if ($roleUser[0] == 'ROLE_OWNER') {
-            $spa = new Spa();
+            if ($roleUser[0] == 'ROLE_OWNER') {
+                $spa = new Spa();
+                $spa->setStatus('standby');
 
-            $form = $this->createForm(SpaType::class);
+                $regionIDF = $regionRepository->find(8);
+                $spa->setRegion($regionIDF);
 
-            $form->handleRequest($request);
+                $spa->setUser($this->getUser());
 
-            if ($form->isSubmitted()) {
+                $form = $this->createForm(SpaForPartnersType::class, $spa);
 
-                $manager->persist($spa);
+                $form->handleRequest($request);
 
-                $manager->flush();
-                return $this->redirectToRoute('owner-spas');
+                if ($form->isSubmitted() && $form->isValid()) {
 
 
-            } else {
-                return $this->render('owner/add-spa.html.twig', [
-                    'form' => $form
-                ]);
+                    $manager->persist($spa);
+
+                    $manager->flush();
+                    return $this->redirectToRoute('owner-spas');
+
+
+                } else {
+                    return $this->render('owner/add-spa.html.twig', [
+                        'form' => $form
+                    ]);
+                }
             }
+            return $this->redirectToRoute('default_home');
         }
+
     }
 
 

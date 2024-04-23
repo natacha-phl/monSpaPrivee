@@ -46,8 +46,8 @@ class SpaRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-/*
-    public function findDistinctDepartments(): array
+
+/*    public function findDistinctDepartments(): array
     {
         $departments = $this->createQueryBuilder('s')
             ->select('d.id, d.name')
@@ -79,18 +79,23 @@ class SpaRepository extends ServiceEntityRepository
         return $formattedCities;
     }*/
 
-    public function findDistinctDepartments(): array
+
+    /*public function findDistinctDepartments(): array
     {
         $departments = $this->createQueryBuilder('s')
-            ->select('d.name')
+            ->select('d.name') // Sélectionner seulement le nom
             ->join('s.department', 'd')
-            ->groupBy('d.name') // Group by name pour éviter les doublons
+            ->groupBy('d.name')
             ->getQuery()
             ->getResult();
 
+        dump($departments);
+
+
+        // Formatage des résultats
         $formattedDepartments = [];
         foreach ($departments as $department) {
-            $formattedDepartments[] = $department['name'];
+            $formattedDepartments[] = $department['name']; // Ajouter le nom au tableau formaté
         }
 
         return $formattedDepartments;
@@ -99,19 +104,24 @@ class SpaRepository extends ServiceEntityRepository
     public function findDistinctCities(): array
     {
         $cities = $this->createQueryBuilder('s')
-            ->select('c.name')
+            ->select('c.name') // Sélectionner seulement le nom
             ->join('s.city', 'c')
-            ->groupBy('c.name') // Group by name pour éviter les doublons
+            ->groupBy('c.name')
             ->getQuery()
             ->getResult();
 
+        // Formatage des résultats
         $formattedCities = [];
         foreach ($cities as $city) {
-            $formattedCities[] = $city['name'];
+            $formattedCities[] = $city['name']; // Ajouter le nom au tableau formaté
         }
 
         return $formattedCities;
     }
+
+*/
+
+
 
 
 
