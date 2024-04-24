@@ -90,7 +90,7 @@ class DefaultController extends AbstractController
             $formEquipment->handleRequest($request);
 
         } else {
-            $rooms = $roomRepository->findAll();
+            $finalRooms = $roomRepository->findAll();
         }
 
 
