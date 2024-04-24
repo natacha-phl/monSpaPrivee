@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\BookingRepository;
 use App\Repository\RoomRepository;
 use http\Env\Request;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -60,11 +61,10 @@ class PaymentController extends AbstractController
 
         foreach ($booking as $item) {
 
-                        $itemName = $item['room']->getName();
-                        $itemPriceHour = $item['room']->getPriceHour() . '00';
-                        $itemBookingHours = $item['bookingHours'];
-                        $itemDescription = 'Formule ' . $itemBookingHours . ' heure(s)';
-
+            $itemName = $item['room']->getName();
+            $itemPriceHour = $item['room']->getPriceHour() . '00';
+            $itemBookingHours = $item['bookingHours'];
+            $itemDescription = 'Formule ' . $itemBookingHours . ' heure(s)';
 
 
             $checkoutItems[] = [
@@ -82,27 +82,25 @@ class PaymentController extends AbstractController
         }
 
 
-
-
-/*        $checkout_session = \Stripe\Checkout\Session::create(
-            [
-            'customer_email' => $this->getUser()->getUserIdentifier(),
-            'payment_method_types' => ['card'],
-            'line_items' => [[
-                'price_data' => [
-                    'currency' => 'eur',
-                    'unit_amount' => $itemPriceHour,
-                    'product_data' => [
-                        'name' => $itemName,
-                        'description'=>$itemDescription
-                    ]
-                ],
-                'quantity' => $itemBookingHours,
-            ]],
-            'mode' => 'payment',
-            'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
-            'cancel_url' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
-        ]);*/
+        /*        $checkout_session = \Stripe\Checkout\Session::create(
+                    [
+                    'customer_email' => $this->getUser()->getUserIdentifier(),
+                    'payment_method_types' => ['card'],
+                    'line_items' => [[
+                        'price_data' => [
+                            'currency' => 'eur',
+                            'unit_amount' => $itemPriceHour,
+                            'product_data' => [
+                                'name' => $itemName,
+                                'description'=>$itemDescription
+                            ]
+                        ],
+                        'quantity' => $itemBookingHours,
+                    ]],
+                    'mode' => 'payment',
+                    'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'cancel_url' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                ]);*/
 
 
         $checkout_session = \Stripe\Checkout\Session::create(
@@ -116,9 +114,6 @@ class PaymentController extends AbstractController
             ]);
 
         $session->invalidate();
-
-
-
 
         return new RedirectResponse($checkout_session->url);
     }

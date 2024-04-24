@@ -10,23 +10,27 @@ use App\Repository\BookingRepository;
 use App\Repository\RegionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserController extends AbstractController
 {
     #[Route('sign-up', name: 'signuppage')]
-    public function signUp(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager){
+    public function signUp(Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager)
+    {
 
         $user = new User();
         $user->setRoles(['ROLE_CUSTOMER']);
 
 
-        $form = $this->createForm(UserType::class,$user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -52,22 +56,17 @@ class UserController extends AbstractController
         }
 
 
-
-
-
         return $this->render('user/sign-up.html.twig', [
-            'form'=> $form
+            'form' => $form
         ]);
     }
 
-    #[Route('owner-sign-up', name:'owner_signup')]
-    public function ownerSignUp(RegionRepository $regionRepository,Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager){
+    #[Route('owner-sign-up', name: 'owner_signup')]
+    public function ownerSignUp(RegionRepository $regionRepository, Request $request, UserPasswordHasherInterface $hasher, EntityManagerInterface $manager, MailerInterface $mailer)
+    {
         $user = new User();
         $user->setRoles(['ROLE_STANDBY']);
         $user->setStatus('standby');
-
-
-
 
 
         $spa = new Spa();
@@ -77,7 +76,7 @@ class UserController extends AbstractController
         $spa->setRegion($regionIDF);
 
 
-        $form = $this->createForm(SpaType::class,$spa);
+        $form = $this->createForm(SpaType::class, $spa);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -91,31 +90,43 @@ class UserController extends AbstractController
 
             $this->addFlash('success', 'Votre demande à bien pris en compte, vous recevrez un email sous 48h vous notifiant sa validation');
 
+            $email = (new TemplatedEmail())
+                ->from('gestion@myvipspa.com')
+                ->to($user->getEmail())
+                ->subject("Confirmation de votre demande d'insription Entreprise.")
+                ->htmlTemplate('emails/confirmation.html.twig')
+                ->context([
+                    'name' => $user->getFirstName(),
+                ]);
+
+            $mailer->send($email);
+
+
             return $this->redirectToRoute('default_home');
 
         }
 
 
-
         return $this->render('user/owner-sign-up.html.twig', [
-            'form'=>$form
+            'form' => $form
         ]);
     }
 
 
     #[Route('/mon-compte', name: 'my-account')]
-    public function myAccount(UserRepository $userRepository, BookingRepository $bookingRepository){
+    public function myAccount(UserRepository $userRepository, BookingRepository $bookingRepository)
+    {
 
         $userId = $this->getUser();
-        $user= $userRepository->find($userId);
+        $user = $userRepository->find($userId);
 
         $bookings = $bookingRepository->findBy([
-            'user'=>$user
+            'user' => $user
         ]);
 
-        return $this->render('user/my-account.html.twig',[
-            'user'=>$user,
-            'bookings'=>$bookings
+        return $this->render('user/my-account.html.twig', [
+            'user' => $user,
+            'bookings' => $bookings
 
         ]);
     }
@@ -157,25 +168,82 @@ class UserController extends AbstractController
     }
 
 
-#[Route('/mon-compte-supprimer', name: 'my-account-delete')]
-public function myAccountDelete(SessionInterface $session, Request $request, UserRepository $userRepository, EntityManagerInterface $manager)
-{
-    if($this->getUser()){
+    #[Route('/mon-compte-supprimer', name: 'my-account-delete')]
+    public function myAccountDelete(SessionInterface $session, Request $request, UserRepository $userRepository, EntityManagerInterface $manager)
+    {
+        if ($this->getUser()) {
 
 //    $userId=$request->query->get('userId');
-    $user = $this->getUser();
-    $session = new Session();
-    $session->invalidate();
-    $manager->remove($user);
-    $manager->flush();
+            $user = $this->getUser();
+            $session = new Session();
+            $session->invalidate();
+            $manager->remove($user);
+            $manager->flush();
 
 
-    return $this->redirectToRoute('app_logout');
+            return $this->redirectToRoute('app_logout');
+        } else {
+            return $this->redirectToRoute('default_home');
+        }
+
     }
-    else {
-        return$this->redirectToRoute('default_home');
+/*
+    #[Route('/forgotten-password', name: 'forgotten-password')]
+    public function forgottenPassword()
+    {
+
+
+        return $this->render('user/forgotten-password.html.twig');
+
+
     }
 
-}
+    #[Route('/password-reset-request', name: 'password-reset-request')]
+    public function passwordReset(Request $request, MailerInterface $mailer, UserRepository $userRepository)
+    {
+
+        $userEmail = $request->request->get('email');
+        $user = $userRepository->findOneBy(['email' => $userEmail]);
+
+        $url = $this->generateUrl('password-reset-action',[], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        if ($user !== null) {
+
+            $userName = $user->getFirstName();
+
+
+            $email = (new TemplatedEmail())
+                ->from('gestion@myvipspa.com')
+                ->to($userEmail)
+                ->subject("Lien de réinitialisation de votre mot de passe")
+                ->htmlTemplate('emails/password-reset.html.twig')
+                ->context([
+                    'name' => $userName,
+                    'url' => $url
+                ]);
+
+            $mailer->send($email);
+
+            $this->addFlash('sucess', 'Un email contenant un lien de réinitialisation de votre mot de passe vous a été envoyé');
+
+
+            return $this->redirectToRoute("default_home");
+
+        }
+
+        $this->addFlash('sucess', 'Un email contenant un lien de réinitialisation de votre mot de passe vous a été envoyé');
+
+
+        return $this->redirectToRoute("default_home");
+
+
+    }
+
+    #[Route('/password-reset-action', name: 'password-reset-action')]
+    public function passwordResetAction()
+    {
+
+    }*/
+
 
 }
