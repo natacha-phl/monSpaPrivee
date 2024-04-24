@@ -16,38 +16,16 @@ class DefaultController extends AbstractController
     #[Route('/', name: 'default_home')]
     public function home(RoomRepository $roomRepository, SpaRepository $spaRepository, Request $request)
     {
-
-//        $rooms = $roomRepository->findAll();
-
-        $rooms = [];
-
         $formEquipment = [];
-
-
-//        $data = new EquipmentFilter();
-//        $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
-//        $formEquipment->handleRequest($request);
-
-        /*        $departments = $spaRepository->findDistinctDepartments();
-                $cities = $spaRepository->findDistinctCities();*/
-
-
-        /*        $formLocation = $this->createForm(LocationFilterType::class,null,[
-                    'departments'=>$departments,
-                    'cities'=>$cities,
-                ]);*/
-
         $formLocation = $this->createForm(LocationFilterType::class,);
         $formLocation->handleRequest($request);
 
         if ($formLocation->isSubmitted()) {
             $formData = $formLocation->getData();
 
-//                if ($formData['region'] !== null || $formData['department'] !== null || $formData['city'] !== null) {
             if ($formData['department'] !== null) {
 
                 $spas = $spaRepository->findBy([
-//                        'region' => $formData['region'],
                     'department' => $formData['department'],
                 ]);
             }
@@ -55,7 +33,6 @@ class DefaultController extends AbstractController
             if ($formData['city'] !== null) {
 
                 $spas = $spaRepository->findBy([
-//                        'region' => $formData['region'],
                     'city' => $formData['city'],
                 ]);
             }
@@ -92,10 +69,6 @@ class DefaultController extends AbstractController
         } else {
             $finalRooms = $roomRepository->findAll();
         }
-
-
-//        $rooms = $roomRepository->findWithEquipmentFilter($data); //methode find search on la créer dans room repository elle servira de récup les produits liés à une recherche
-
 
         return $this->render('default/home.html.twig', [
             'rooms' => $finalRooms,
