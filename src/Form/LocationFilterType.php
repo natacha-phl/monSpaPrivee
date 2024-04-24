@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\City;
 use App\Entity\Department;
 
+use App\Entity\Equipment;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
@@ -51,7 +52,6 @@ class LocationFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'Séléctionnez un département',
             ])
-
             ->add('city', EntityType::class, [
                 'choice_label' => 'name',
                 'label' => false,
@@ -59,13 +59,20 @@ class LocationFilterType extends AbstractType
                 'required' => false,
                 'placeholder' => 'Séléctionnez une ville',
             ])
-        ->add('submit', SubmitType::class, [
-            'label' => 'Valider',
-            'attr' => [
-                "class" => 'btn btn-secondary btn-sm w-100'
-            ]
+            ->add('equipments', EntityType::class, [
+                'label' => false,
+                'required' => false,
+                'class' => Equipment::class,
+                'expanded' => false, //pour le checkbox
+                'multiple' => true, // pour le checkbox
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Valider',
+                'attr' => [
+                    "class" => 'btn btn-secondary btn-sm w-100'
+                ]
 
-        ]);
+            ]);
 
 
     }

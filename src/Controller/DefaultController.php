@@ -21,7 +21,7 @@ class DefaultController extends AbstractController
 
         $rooms = [];
 
-        $formEquipment =[];
+        $formEquipment = [];
 
 
 //        $data = new EquipmentFilter();
@@ -60,27 +60,37 @@ class DefaultController extends AbstractController
                 ]);
             }
 
-                if (!empty($spas)) {
-                    $spaIds = [];
-                    foreach ($spas as $spa) {
-                        $spaIds[] = $spa->getId();
-                    }
+            if (!empty($spas)) {
+                $spaIds = [];
 
-                    $rooms = $roomRepository->findBy([
-                        'spa' => $spaIds
-                    ]);
-
+                foreach ($spas as $spa) {
+                    $spaIds[] = $spa->getId();
                 }
 
-                $data = new EquipmentFilter();
-                $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
-                $formEquipment->handleRequest($request);
+                $rooms = $roomRepository->findBy([
+                    'spa' => $spaIds
+                ]);
 
+                $finalRooms = [];
+                foreach ($formData['equipments'] as $searchEquipment) {
+                    foreach ($rooms as $room) {
+                        foreach ($room->getEquipment() as $equipment) {
+                            if ($equipment == $searchEquipment) {
+                                if (!in_array($room, $finalRooms)) {
+                                    $finalRooms[] = $room;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-
+            $data = new EquipmentFilter();
+            $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
+            $formEquipment->handleRequest($request);
 
         } else {
-            $rooms=$roomRepository->findAll();
+            $rooms = $roomRepository->findAll();
         }
 
 
@@ -88,7 +98,7 @@ class DefaultController extends AbstractController
 
 
         return $this->render('default/home.html.twig', [
-            'rooms' => $rooms,
+            'rooms' => $finalRooms,
             'formEquipment' => $formEquipment,
             'formLocation' => $formLocation->createView()
 
