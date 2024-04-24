@@ -1,0 +1,131 @@
+/*
+HOMEPAGE
+}*/
+
+
+#home-top-container {
+    max-width: 100%;
+    background-image: url("../image/main-picture4.jpg");
+    background-size: cover;
+    background-position: center;
+
+}
+
+#home-top{
+    height: 500px;
+
+}
+
+#home-top h1, p, h3{
+
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+#home-top h1,p {
+    margin-bottom: 0 ;
+    padding: 5px 0;
+}
+
+
+#cards a {
+    text-decoration: none;
+}
+
+
+#main-content-container{
+    align-items: flex-start;
+}
+
+
+#main-content-container #equipment-filter{
+    display: flex;
+    flex-direction: column-reverse;
+    max-width: 5%;
+    margin: 0 auto;
+}
+
+
+#main-container #cards{
+
+    max-width: 95%;
+}
+
+
+footer{
+    padding: 20px;
+    text-align: center;
+
+}
+
+
+footer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+footer ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+
+
+@media screen and (max-width: 991px) {
+
+    #home-top h1, p{
+        padding: 10px;
+    }
+
+
+
+
+
+
+    #location-filter{
+
+        align-items: center;
+    }
+
+    #department-city-field{
+
+    }
+
+    #owner-sign-up{
+        flex-direction: column-reverse;
+
+    }
+
+
+
+
+
+
+}
+
+@media screen and (min-width: 992px) {
+
+
+
+    #main-content-container {
+        display: flex !important;
+    }
+
+    #home-steps{
+        margin-top: -4px;
+        display: flex;
+    }
+
+
+
+    #location-filter{
+        display: flex;
+        flex-direction: column-reverse;
+        margin-bottom: -30px;
+    }
+
+    #card-design{
+        display: flex;
+        align-items: start;
+    }
+
+}
