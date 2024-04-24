@@ -20,6 +20,12 @@ class PaymentController extends AbstractController
     #[Route('/payment/success', name: 'payment_success')]
     public function success()
     {
+
+         # TODO : Récupération de l'ID order dans l'URL (Request $request) HTTP FOUNDATION
+        # TODO : Afficher a l'utilisateur merci Hugo, ta commande 4691681 est validé. "TRAITEMENT EN COURS"
+        # TODO Envoi d'un email.
+
+
 //        $this->addFlash('notice', 'Votre reservation a bien été effectué !');
         return $this->render('payment/success.html.twig', [
         ]);
