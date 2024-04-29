@@ -28,7 +28,7 @@
                     <td>{{ spa.description }}</td>
                     <td>
 
-                        <form action="{{ path('admin_accounts_validation_allow') }}" method="GET">
+                        <form action="{{ path('admin_accounts_validation_allow') }}" method="POST">
                             <input type="hidden" name="spaId" value="{{ spa.id }}">
 
 
@@ -38,7 +38,7 @@
                         </form>
                     </td>
                     <td>
-                        <form action="{{ path('admin_accounts_validation_deny') }}" method="GET">
+                        <form action="{{ path('admin_accounts_validation_deny') }}" method="POST">
                             <input type="hidden" name="spaId" value="{{ spa.id }}">
 
 

@@ -18,12 +18,13 @@ class PaymentController extends AbstractController
 {
 
     #[Route('/payment/success', name: 'payment_success')]
-    public function success()
+    public function success(SessionInterface $session)
     {
 
          # TODO : Récupération de l'ID order dans l'URL (Request $request) HTTP FOUNDATION
         # TODO : Afficher a l'utilisateur merci Hugo, ta commande 4691681 est validé. "TRAITEMENT EN COURS"
         # TODO Envoi d'un email.
+
 
 
 //        $this->addFlash('notice', 'Votre reservation a bien été effectué !');
@@ -88,38 +89,16 @@ class PaymentController extends AbstractController
         }
 
 
-        /*        $checkout_session = \Stripe\Checkout\Session::create(
-                    [
-                    'customer_email' => $this->getUser()->getUserIdentifier(),
-                    'payment_method_types' => ['card'],
-                    'line_items' => [[
-                        'price_data' => [
-                            'currency' => 'eur',
-                            'unit_amount' => $itemPriceHour,
-                            'product_data' => [
-                                'name' => $itemName,
-                                'description'=>$itemDescription
-                            ]
-                        ],
-                        'quantity' => $itemBookingHours,
-                    ]],
-                    'mode' => 'payment',
-                    'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
-                    'cancel_url' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
-                ]);*/
-
-
         $checkout_session = \Stripe\Checkout\Session::create(
             [
                 'customer_email' => $this->getUser()->getUserIdentifier(),
                 'payment_method_types' => ['card'],
                 'line_items' => $checkoutItems, // Utiliser les éléments de paiement construits précédemment
                 'mode' => 'payment',
-                'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'success_url' => $this->generateUrl('booking_reserver', [], UrlGeneratorInterface::ABSOLUTE_URL),
                 'cancel_url' => $this->generateUrl('payment_error', [], UrlGeneratorInterface::ABSOLUTE_URL),
             ]);
 
-        $session->invalidate();
 
         return new RedirectResponse($checkout_session->url);
     }

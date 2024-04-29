@@ -24,26 +24,6 @@ class LocationFilterType extends AbstractType
 
 
         $builder
-            /*            ->add('region', EntityType::class, [
-                            'choice_label' => 'name',
-                            'class' => Region::class,
-                            'required' => false,
-                            'placeholder' => 'Séléctionnez une region',
-                        ])*/
-
-
-            /*
-                        ->add('department', ChoiceType::class, [
-                            'choices' => $options['departments'],
-                            'required' => false,
-                            'placeholder' => 'Séléctionnez un département',
-                        ])
-                        ->add('city', ChoiceType::class, [
-                            'choices' => $options['cities'],
-                            'required' => false,
-                            'placeholder' => 'Séléctionnez une ville',
-                        ]);*/
-
 
             ->add('department', EntityType::class, [
                 'choice_label' => 'name',

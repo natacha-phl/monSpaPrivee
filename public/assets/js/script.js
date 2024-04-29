@@ -1,5 +1,5 @@
 
-// document.getElementById("modify").onclick = function() {Modify()};
+document.getElementById("modify").onclick = function() {Modify()};
 
 function Modify() {
     document.getElementById('firstname').disabled = false;

@@ -42,7 +42,7 @@
                 <td>{{ booking.user.firstName }}</td>
                 <td>{{ booking.user.email }}</td>
                 <td>
-                    <form action="{{ path('schedule-booking') }}" method="GET">
+                    <form action="{{ path('schedule-booking') }}" method="POST">
                         <input type="hidden" name="bookingId" value="{{ booking.id }}">
                         <input type="datetime-local" name="bookingStartDate">
 

@@ -1,73 +1,90 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
-    <h1>Page mon compte</h1>
-
-    <form action="{{ path('my-account-modify') }}" method="get">
-        <label for="firstname">Prénom</label>
-        <input type="text" name="firstName" id="firstname" value="{{ user.firstName }}" disabled>
-
-        <label for="lastname">Nom</label>
-        <input type="text" name="lastName" id="lastname" value="{{ user.lastName }}" disabled>
+    <div class="container">
+        <div class="row">
+            <div class="col-10 col-lg-6 mx-auto">
+                <h1 class="p-1">Mon compte</h1>
 
 
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="{{ user.email }}" disabled>
+                <form action="{{ path('my-account-modify') }}" method="get">
+                    <div class="mb-3">
 
-        <label for="street">Adresse : rue</label>
-        <input type="text" name="street" id="street" value="{{ user.street }}" disabled>
+                        <label for="firstname" class="form-label">Prénom</label>
+                        <input class="form-control" type="text" name="firstName" id="firstname"
+                               value="{{ user.firstName }}" disabled>
 
-        <label for="zipcode">Code postal</label>
-        <input type="text" name="zipCode" id="zipcode" value="{{ user.zipCode }}" disabled>
-
-        <label for="city">Ville</label>
-        <input type="text" name="city" id="city" value="{{ user.city }}" disabled>
-
-
-        <button type="button" id="modify">Modifier</button>
-        <button type="button" id="cancel" hidden="">Annuler</button>
-
-        <button type="submit" id="modificationvalidation" hidden="">Valider</button>
-    </form>
-
-    <form action="{{ path('my-account-delete') }}" method="get">
-        <input type="hidden" name="userId" value="{{ user.id }}">
-        <button id="delete-form" class="btn btn-danger btn-sm">Supprimer mon compte</button>
-    </form>
+                        <label for="lastname" class="form-label">Nom</label>
+                        <input class="form-control" type="text" name="lastName" id="lastname"
+                               value="{{ user.lastName }}" disabled>
 
 
-    <table class="table">
-        <tr>
-            <th>Date de la transaction</th>
-            <th>N°de booking</th>
-            <th>Statut</th>
-            <th>Spa</th>
-            <th>Salle</th>
-            <th>Durée</th>
-            <th>Montant</th>
-            <th>Date planifiée</th>
-            <th></th>
-        </tr>
+                        <label for="email" class="form-label">Email</label>
+                        <input class="form-control" type="email" name="email" id="email" value="{{ user.email }}"
+                               disabled>
+
+                        <label for="street" class="form-label">Adresse : rue</label>
+                        <input class="form-control" type="text" name="street" id="street" value="{{ user.street }}"
+                               disabled>
+
+                        <label for="zipcode" class="form-label">Code postal</label>
+                        <input class="form-control" type="text" name="zipCode" id="zipcode" value="{{ user.zipCode }}"
+                               disabled>
+
+                        <label for="city" class="form-label">Ville</label>
+                        <input class="form-control" type="text" name="city" id="city" value="{{ user.city }}" disabled>
 
 
-        <tbody>
-        {% for booking in bookings %}
-            <tr>
-                <td>{{ booking.createdAt|format_datetime() }}</td>
-                <td>{{ booking.id }}</td>
-                <td>{{ booking.status }}</td>
-                <td>{{ booking.room.spa.name }}</td>
-                <td>{{ booking.room.name }}</td>
-                <td>{{ booking.duration }}</td>
-                <td>{{ booking.totalAmount ~ ' €' }}</td>
-                <td> {% if booking.startDate == null %} -- {% else %}
-                        {{ booking.startDate|format_datetime() }} {% endif %}</td>
+                        <button class="btn btn-primary mt-2" type="button" id="modify">Modifier</button>
+                        <button class="btn btn-primary mt-2" type="button" id="cancel" hidden="">Annuler</button>
 
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                        <button class="btn btn-primary mt-2" type="submit" id="modificationvalidation" hidden="">
+                            Valider
+                        </button>
+                    </div>
+                </form>
 
+                <form action="{{ path('my-account-delete') }}" method="get">
+                    <input type="hidden" name="userId" value="{{ user.id }}">
+                    <button id="delete-form" class="btn btn-danger">Supprimer mon compte</button>
+                </form>
+
+                <div class="mt-5"><h3>Mes commandes</h3></div>
+
+                <div class="table-responsive">
+                    <table class="table col-lg-6">
+                        <tr>
+                            <th scope="col">Date de la transaction</th>
+                            <th scope="col">N°de booking</th>
+                            <th scope="col">Statut</th>
+                            <th scope="col">Spa</th>
+                            <th scope="col">Salle</th>
+                            <th scope="col">Durée</th>
+                            <th scope="col">Montant</th>
+                            <th scope="col">Date planifiée</th>
+                        </tr>
+
+
+                        <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.createdAt|format_datetime() }}</td>
+                                <td>{{ booking.id }}</td>
+                                <td>{{ booking.status }}</td>
+                                <td>{{ booking.room.spa.name }}</td>
+                                <td>{{ booking.room.name }}</td>
+                                <td>{{ booking.duration }}</td>
+                                <td>{{ booking.totalAmount ~ ' €' }}</td>
+                                <td> {% if booking.startDate == null %} -- {% else %}
+                                        {{ booking.startDate|format_datetime() }} {% endif %}</td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

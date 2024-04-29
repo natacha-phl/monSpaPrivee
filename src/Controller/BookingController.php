@@ -18,11 +18,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class BookingController extends AbstractController
 
 {
+    #[Route('/reserver', name: 'booking_reserver')]
 
-
-    #[Route('/reserver', name: 'booking_reserver')] // j'ai enlevé l'id car on récupère le panier je l'ai aussi supprimé des paramètres de ma fonction
-
-    public function book(RoomRepository $roomRepository, UserRepository $userRepository, Request $request, EntityManagerInterface $manager, SessionInterface $session)
+    public function book(RoomRepository $roomRepository, EntityManagerInterface $manager, SessionInterface $session)
     {
 
         $panier = $session->get('panier', []);
@@ -39,11 +37,8 @@ class BookingController extends AbstractController
                 'lineNumber' => $lineNumber,
 
             ];
-            //}
+
         }
-
-        //dd($lineNumber);
-
 
         foreach ($panierWithData as $item) {
 
@@ -72,26 +67,20 @@ class BookingController extends AbstractController
             $booking->setTotalAmount($totalAmount);
 
 
-            /*            $form = $this->createForm(BookingType::class, $booking, [
-                            'room' => $room,
-                        ]);
-
-
-                        $form->handleRequest($request);*/
-
-//            if ($form->isSubmitted()) {
 
             $manager->persist($booking);
 
             $manager->flush();
+
+            $session->remove('panier');
+            return $this->render('payment/success.html.twig');
+
 
 
         }
 
         return $this->redirectToRoute('default_home');
 
-
-        // return $this->redirectToRoute('default_home');
 
 
     }

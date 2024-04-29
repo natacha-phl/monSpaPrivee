@@ -237,8 +237,8 @@ class OwnerController extends AbstractController
     public function sceduleBooking(Request $request, BookingRepository $bookingRepository, EntityManagerInterface $manager)
     {
 
-        $bookingId = $request->query->get('bookingId');
-        $bookingStartDate = $request->query->get('bookingStartDate');
+        $bookingId = $request->get('bookingId');
+        $bookingStartDate = $request->get('bookingStartDate');
 
 
         $bookingStartDateConverted = DateTimeImmutable::createFromFormat('Y-m-d\TH:i', $bookingStartDate);

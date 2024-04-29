@@ -13,7 +13,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SpaForPartnersType extends AbstractType
 {
@@ -24,7 +23,6 @@ class SpaForPartnersType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du SPA',
-//                'constraints' => new NotBlank(['message' => 'Veuillez entrer le nom de votre SPA'])
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description du SPA'

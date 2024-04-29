@@ -92,7 +92,7 @@ class AdminController extends AbstractController
     public function accountsValidationDeny(EntityManagerInterface $manager, Request $request, SpaRepository $spaRepository)
     {
 
-        $spaId = $request->query->get('spaId');
+        $spaId = $request->get('spaId');
         $spa = $spaRepository->find($spaId);
         $manager->remove($spa);
         $manager->flush();
