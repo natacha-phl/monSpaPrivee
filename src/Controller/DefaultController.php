@@ -62,9 +62,9 @@ class DefaultController extends AbstractController
                 }
             }
 
-            $data = new EquipmentFilter();
+/*            $data = new EquipmentFilter();
             $formEquipment = $this->createForm(EquipmentFilterType::class, $data); // je mets le $data comme ca quand je vais faire le handle request ca va modidifer les données $data
-            $formEquipment->handleRequest($request);
+            $formEquipment->handleRequest($request);*/
 
         } else {
             $finalRooms = $roomRepository->findAll();

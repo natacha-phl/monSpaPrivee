@@ -67,7 +67,7 @@ class AdminController extends AbstractController
     public function accountsValidationAllow(EntityManagerInterface $manager, Request $request, SpaRepository $spaRepository, UserRepository $userRepository)
     {
 
-        $spaId = $request->query->get('spaId');
+        $spaId = $request->get('spaId');
         $spa = $spaRepository->find($spaId);
         $spa->setStatus('confirmed');
 
